@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 1040" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="52" y1="71" x2="673" y2="995" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D8E0C9"/>
+      <stop offset=".52" stop-color="#BECBAE"/>
+      <stop offset="1" stop-color="#809775"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="229" y1="324" x2="508" y2="753" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EBD9B8"/>
+      <stop offset="1" stop-color="#C8AA7B"/>
+    </linearGradient>
+    <linearGradient id="shadow" x1="335" y1="744" x2="375" y2="850" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#314634" stop-opacity=".3"/>
+      <stop offset="1" stop-color="#314634" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grain" width="38" height="38" patternUnits="userSpaceOnUse">
+      <path d="M0 19h38M19 0v38" stroke="#F7F3E9" stroke-opacity=".1"/>
+    </pattern>
+  </defs>
+  <path fill="url(#bg)" d="M0 0h720v1040H0z"/>
+  <path fill="url(#grain)" d="M0 0h720v1040H0z"/>
+  <circle cx="573" cy="186" r="116" fill="#E5C77F" fill-opacity=".78"/>
+  <path d="M0 675c103-92 171-91 265-13 117 97 196 84 455-48v426H0z" fill="#7F9871"/>
+  <path d="M0 794c176-96 274-88 389-12 107 72 198 49 331-31v289H0z" fill="#637F62"/>
+  <path d="M85 550c40-106 79-150 131-176-8 77-43 137-131 176Zm-25 24c-8-101-30-160-79-205 0 88 25 150 79 205Zm536 17c12-95 46-146 98-180-11 85-42 143-98 180Z" fill="#557555" fill-opacity=".72"/>
+  <ellipse cx="368" cy="824" rx="229" ry="52" fill="url(#shadow)"/>
+  <path d="m226 342 110-103 159 18 64 92-12 433-304 9-17-449Z" fill="#9B805A" fill-opacity=".38"/>
+  <path d="m201 341 114-96 162 17 77 89-19 416-324 7-10-433Z" fill="url(#paper)"/>
+  <path d="m315 245 4 132 238-26-80-89-162-17Z" fill="#F2E5CE"/>
+  <path d="m201 341 114-96 4 132-114-36Z" fill="#B79467"/>
+  <path d="m201 341 4 92 121 36 114-23 98-34 4-54-122 27-120-8-99-36Z" fill="#D5BD96"/>
+  <path d="m258 303 58 76m70-122 6 131" stroke="#A98B60" stroke-opacity=".35" stroke-width="3"/>
+  <path d="M323 477c-10-71 31-113 85-121 1 55-22 97-85 121Z" fill="#6D8B62"/>
+  <path d="M326 475c19-45 43-76 77-107m-55 77c-2-24-10-41-23-54m46 28c9-22 22-38 41-49" stroke="#E9E1CE" stroke-linecap="round" stroke-width="4"/>
+  <path d="M376 492v39" stroke="#6D8B62" stroke-linecap="round" stroke-width="5"/>
+  <path d="M258 658h221" stroke="#A58860" stroke-opacity=".38" stroke-width="2"/>
+  <text x="360" y="584" fill="#526849" font-family="Georgia,serif" font-size="35" font-style="italic" text-anchor="middle">Le naturel</text>
+  <text x="360" y="625" fill="#526849" font-family="Arial,sans-serif" font-size="15" letter-spacing="5" text-anchor="middle">FAIT SON CHEMIN</text>
+  <path d="M258 773c-44-14-68-48-70-91 45 13 69 45 70 91Zm198-9c48-15 72-49 74-95-46 16-70 51-74 95Z" fill="#3F6345"/>
+  <path d="M271 759c-1-37-16-67-43-88m213 84c7-41 22-68 51-87" stroke="#D8E1C9" stroke-linecap="round" stroke-width="4"/>
+  <path d="M281 732c-4-14-13-24-27-32m224 35c4-17 13-29 28-39" stroke="#D8E1C9" stroke-linecap="round" stroke-width="3"/>
+  <circle cx="121" cy="308" r="8" fill="#F5E3AC"/>
+  <circle cx="589" cy="690" r="5" fill="#F5E3AC"/>
+  <circle cx="153" cy="737" r="5" fill="#E8CB8B"/>
+</svg>
