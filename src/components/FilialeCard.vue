@@ -50,28 +50,31 @@ defineProps<{ filiale: Filiale }>()
     </template>
 
     <template v-else-if="filiale.kind === 'culture'">
-      <div class="culture-mark" aria-hidden="true">229<span>°</span></div>
-      <div class="branch-card-copy">
-        <h3>{{ filiale.name }}</h3>
-        <span class="branch-tagline">{{ filiale.tagline }}</span>
-        <p>{{ filiale.description }}</p>
-      </div>
-      <div class="branch-card-bottom">
-        <span>{{ filiale.detail }}</span>
+      <figure class="culture-image">
+        <img :src="filiale.image" :alt="filiale.imageAlt" loading="lazy" />
+      </figure>
+      <div class="culture-content">
+        <div class="branch-card-copy">
+          <h3>{{ filiale.name }}</h3>
+          <span class="branch-tagline">{{ filiale.tagline }}</span>
+          <p>{{ filiale.description }}</p>
+        </div>
         <a
-          class="round-link"
+          class="branch-link"
           :href="filiale.url"
           target="_blank"
           rel="noopener noreferrer"
           :aria-label="`Découvrir ${filiale.name} (nouvel onglet)`"
-        ><ArrowUpRight :size="18" /></a>
+        >
+          Découvrir GAGNANTS 229 <ArrowUpRight :size="16" />
+        </a>
       </div>
     </template>
 
     <template v-else>
       <figure class="creative-image">
         <img :src="filiale.image" :alt="filiale.imageAlt" loading="lazy" />
-        <figcaption>Idées d’ici, imprimées ici.</figcaption>
+        <figcaption>Former, créer, entreprendre.</figcaption>
       </figure>
       <div class="creative-content">
         <div class="branch-card-copy">

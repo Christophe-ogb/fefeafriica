@@ -1,5 +1,38 @@
 <script setup lang="ts">
-import { ArrowUpRight, CalendarDays, Radio } from '@lucide/vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { ArrowUpRight, CalendarDays } from '@lucide/vue'
+
+const launchDate = new Date('2026-11-03T00:00:00+01:00')
+const launchDayEnd = new Date('2026-11-04T00:00:00+01:00')
+const now = ref(new Date())
+let countdownTimer: ReturnType<typeof setInterval> | undefined
+
+const countdown = computed(() => {
+  const millisecondsLeft = launchDate.getTime() - now.value.getTime()
+
+  if (millisecondsLeft <= 0) {
+    return now.value.getTime() < launchDayEnd.getTime()
+      ? { label: "C'est aujourd'hui !", days: null, hours: null }
+      : { label: 'Le lancement est passé', days: null, hours: null }
+  }
+
+  const totalHours = Math.floor(millisecondsLeft / (1000 * 60 * 60))
+  return {
+    label: 'avant le lancement',
+    days: Math.floor(totalHours / 24),
+    hours: totalHours % 24,
+  }
+})
+
+onMounted(() => {
+  countdownTimer = setInterval(() => {
+    now.value = new Date()
+  }, 60_000)
+})
+
+onUnmounted(() => {
+  if (countdownTimer) clearInterval(countdownTimer)
+})
 
 const channels = [
   {
@@ -37,16 +70,33 @@ const channels = [
         </p>
       </div>
 
-      <div class="updates-note">
-        <div class="updates-note-icon"><CalendarDays :size="18" /></div>
-        <div>
-          <span class="updates-note-label"><Radio :size="12" /> ACTUALITÉS & AGENDA</span>
-          <p>
-            Les dates et annonces seront relayées ici lorsqu’elles seront confirmées. En attendant,
-            retrouvez les informations de chaque initiative sur ses espaces officiels.
-          </p>
+      <article class="saaki-event" aria-labelledby="saaki-event-title">
+        <div class="saaki-event-copy">
+          <span class="saaki-event-label">
+            <span class="event-live-dot" aria-hidden="true"></span>
+            ÉVÉNEMENT SAAKI
+          </span>
+          <h3 id="saaki-event-title">Le lancement officiel de SAAKI</h3>
+          <p class="saaki-event-date"><CalendarDays :size="15" /> Mardi 3 novembre 2026</p>
         </div>
-      </div>
+        <div class="saaki-countdown" aria-live="polite">
+          <template v-if="countdown.days !== null && countdown.hours !== null">
+            <span class="countdown-unit"><strong>{{ countdown.days }}</strong><small>jours</small></span>
+            <span class="countdown-separator" aria-hidden="true">:</span>
+            <span class="countdown-unit"><strong>{{ countdown.hours }}</strong><small>heures</small></span>
+            <span class="countdown-caption">{{ countdown.label }}</span>
+          </template>
+          <span v-else class="countdown-status">{{ countdown.label }}</span>
+        </div>
+        <a
+          class="saaki-event-cta"
+          href="https://eventreet.com/event/saaki-green-launch/395"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Réserver mon pass <ArrowUpRight :size="16" />
+        </a>
+      </article>
 
       <div class="updates-channels">
         <a

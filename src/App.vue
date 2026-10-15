@@ -41,8 +41,8 @@ const filiales: Filiale[] = [
     description:
       'Des jeux, des animations et des moments à partager pour faire vivre le patrimoine béninois.',
     url: 'https://gagnants229.com',
-    image: '/images/gagnants229.svg',
-    imageAlt: 'Festival culturel et public réuni autour des arts',
+    image: '/images/logoweb_BJ.jpg.jpeg',
+    imageAlt: 'Logo de GAGNANTS 229',
     kind: 'culture',
     detail: 'Jouer, transmettre, rassembler.',
   },
@@ -53,8 +53,8 @@ const filiales: Filiale[] = [
     description:
       'Compétences numériques, design, impression et entrepreneuriat : des formations pour apprendre et passer à l’action.',
     url: 'https://www.facebook.com/maafrik',
-    image: '/images/maafrik.svg',
-    imageAlt: 'Atelier de création graphique et matériel artistique',
+    image: '/images/maafrikcenters.png',
+    imageAlt: 'Logo de MAAFRIK CENTERS',
     kind: 'creative',
     detail: 'Créer avec les talents d’ici.',
   },
@@ -76,8 +76,10 @@ const selectedTopic = ref('')
           <h2 id="branches-title">Trois univers.<br /><em>Un même engagement.</em></h2>
         </div>
         <p class="section-intro">
-          MAAFRIK CENTERS, SAAKI et GAGNANTS 229 gardent chacune leur mission et leur communauté.
-          Fèfè Afriica les rassemble et vous oriente vers la bonne équipe.
+          <strong class="project-name project-name--maafrik">MAAFRIK CENTERS</strong>,
+          <strong class="project-name project-name--saaki">SAAKI</strong> et
+          <strong class="project-name project-name--gagnants">GAGNANTS 229</strong> gardent chacune
+          leur mission et leur communauté. Fèfè Afriica les rassemble et vous oriente vers la bonne équipe.
         </p>
       </div>
 

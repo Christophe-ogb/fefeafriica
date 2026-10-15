@@ -11,6 +11,10 @@ const heroImages = [
     src: '/images/hero-benin-culture.jpg',
     alt: 'Statue en bronze d’un cavalier sur son cheval',
   },
+  {
+    src: '/images/amazone.jpg',
+    alt: 'Statue de l’Amazone à Cotonou, au Bénin',
+  },
 ]
 
 const activeImage = ref(0)
