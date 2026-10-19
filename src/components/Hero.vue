@@ -13,7 +13,7 @@ const heroImages = [
   },
   {
     src: '/images/amazone.jpg',
-    alt: 'Statue de l’Amazone à Cotonou, au Bénin',
+    alt: 'Statue de l’Amazone à Calavi, au Bénin',
   },
 ]
 
@@ -90,14 +90,14 @@ onUnmounted(() => {
           <span class="stamp-icon"><Sparkles :size="18" /></span>
           <span>Imaginé<br />au Bénin</span>
         </div>
-        <div class="art-note"><span>06° 22' N</span><span>Cotonou · Bénin</span></div>
+        <div class="art-note"><span>06° 22' N</span><span>Calavi · Bénin</span></div>
         <div class="art-vertical-label">CULTURE · CRÉATION · ENGAGEMENT</div>
       </div>
     </div>
 
     <div class="hero-bottomline" aria-hidden="true">
       <span>Entreprendre autrement, ensemble.</span>
-      <span class="bottomline-center"><span></span> Cotonou, Bénin <span></span></span>
+      <span class="bottomline-center"><span></span> Calavi, Bénin <span></span></span>
       <span>Depuis nos communautés, pour demain.</span>
     </div>
   </section>

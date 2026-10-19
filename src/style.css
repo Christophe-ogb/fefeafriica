@@ -194,9 +194,9 @@ img { display: block; max-width: 100%; }
 .branches-footnote { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 31px; color: #83877d; font-size: 9px; letter-spacing: .3px; }
 .footnote-line { width: 35px; height: 1px; background: #d2d3c9; }
 .project-name { font-weight: 700; }
-.project-name--saaki { color: var(--project-saaki); }
-.project-name--maafrik { color: var(--project-maafrik); }
-.project-name--gagnants { color: #351300; }
+.project-name--saaki { color: #4ade80; }
+.project-name--maafrik { color: #60a5fa; }
+.project-name--gagnants { color: #ffd43b; }
 
 .pathways { padding: 90px 0 100px; }
 .pathways-heading, .updates-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; }
