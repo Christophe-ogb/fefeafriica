@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
-import { ArrowUpRight, Check, Mail, MapPin, MessageCircle } from '@lucide/vue'
+import { ArrowUpRight, Mail, MapPin, MessageCircle } from '@lucide/vue'
 
 interface ContactForm {
   name: string
@@ -10,7 +10,7 @@ interface ContactForm {
 }
 
 const props = defineProps<{ selectedTopic?: string }>()
-const whatsappNumber = '2290196673658'
+const whatsappNumber = '2290141757539'
 const directWhatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Bonjour Fèfè Afriica, je souhaite obtenir des informations.')}`
 
 const form = reactive<ContactForm>({
@@ -29,8 +29,6 @@ watch(
 
 const errors = reactive<Partial<Record<keyof ContactForm, string>>>({})
 const feedback = ref('')
-const isValid = ref(false)
-const whatsappUrl = ref('')
 
 function validateForm() {
   Object.keys(errors).forEach((key) => delete errors[key as keyof ContactForm])
@@ -49,10 +47,8 @@ function validateForm() {
 
 function submitForm() {
   feedback.value = ''
-  whatsappUrl.value = ''
-  isValid.value = validateForm()
 
-  if (!isValid.value) {
+  if (!validateForm()) {
     feedback.value = 'Quelques informations sont à vérifier avant de continuer.'
     return
   }
@@ -68,8 +64,14 @@ function submitForm() {
     form.message.trim(),
   ].join('\n')
 
-  whatsappUrl.value = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
-  feedback.value = 'Votre message est prêt. Ouvrez WhatsApp pour l’envoyer à notre équipe.'
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+  const whatsappWindow = window.open(whatsappUrl, '_blank')
+
+  if (whatsappWindow) {
+    whatsappWindow.opener = null
+  } else {
+    window.location.assign(whatsappUrl)
+  }
 }
 </script>
 
@@ -164,22 +166,11 @@ function submitForm() {
           <button class="button button--dark" type="submit">
             Envoyer un message <ArrowUpRight :size="16" />
           </button>
-          <span v-if="isValid" class="form-check"><Check :size="15" /> Message vérifié</span>
         </div>
-        <p v-if="feedback" class="form-feedback" :class="{ 'form-feedback--success': isValid }" role="status">
+        <p v-if="feedback" class="form-feedback" role="status">
           {{ feedback }}
         </p>
-        <a
-          v-if="whatsappUrl"
-          class="whatsapp-send"
-          :href="whatsappUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <MessageCircle :size="16" /> Ouvrir WhatsApp et envoyer le message
-          <ArrowUpRight :size="15" />
-        </a>
-        <span class="form-privacy"><Mail :size="13" /> Votre message sera envoyé par WhatsApp, après confirmation de votre part.</span>
+        <span class="form-privacy"><Mail :size="13" /> WhatsApp s’ouvrira avec votre message prérempli ; vous pourrez le vérifier et l’envoyer.</span>
       </form>
     </div>
   </section>

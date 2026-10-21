@@ -23,7 +23,7 @@ let slideshowTimer: ReturnType<typeof setInterval> | undefined
 onMounted(() => {
   slideshowTimer = setInterval(() => {
     activeImage.value = (activeImage.value + 1) % heroImages.length
-  }, 120_000)
+  }, 2_000)
 })
 
 onUnmounted(() => {

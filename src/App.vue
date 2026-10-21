@@ -8,6 +8,7 @@ import Updates from './components/Updates.vue'
 import About from './components/About.vue'
 import Contact from './components/Contact.vue'
 import Footer from './components/Footer.vue'
+import ChatBot from './components/ChatBot.vue'
 
 interface Filiale {
   name: string
@@ -103,4 +104,5 @@ const selectedTopic = ref('')
     <Contact :selected-topic="selectedTopic" />
   </main>
   <Footer :year="currentYear" />
+  <ChatBot />
 </template>
