@@ -6,13 +6,35 @@ import { resolve } from 'node:path'
 const localEnvPath = resolve(process.cwd(), '.env.local')
 if (existsSync(localEnvPath)) loadEnv({ path: localEnvPath })
 
-const SYSTEM_INSTRUCTION = `Tu es Fèfè Bot, l'assistant virtuel officiel de la fédération Fèfè Afriica (FEFE AFRICA), basée à Calavi, au Bénin. Réponds avec courtoisie, clarté et concision à toutes les questions concernant la fédération, son siège, ses activités, ses filiales et les moyens de contact.
-1. SAAKI (saaki.bj) : Écologie, fabrication et distribution de sacs en papier pour éradiquer les sacs plastiques au Bénin.
-2. Gagnants229 (gagnants229.com) : Culture & Divertissement, valorisation du patrimoine béninois par des jeux et animations.
-3. MAAFRIK CENTERS : Conception graphique, impression tout support, marquage publicitaire, emballages et formation des jeunes pour l'insertion professionnelle.
-La fédération est basée à Calavi, au Bénin. N'invente pas une adresse précise, le nom du dirigeant, des horaires ou toute autre information qui ne figure pas dans ce contexte. Si une information demandée n'est pas connue, dis-le clairement et propose de contacter l'équipe via le formulaire du site ou WhatsApp.
-Comprends les fautes de frappe, les accents manquants, les formulations familières et les messages courts. Ne refuse pas une question simplement parce qu'elle est mal orthographiée.
-Pour une commande, un devis ou un partenariat, invite poliment l'utilisateur à contacter l'équipe via le formulaire du site ou WhatsApp.`
+const SYSTEM_INSTRUCTION = `Tu es Fèfè Bot, l'assistant virtuel officiel de la fédération Fèfè Afriica (FEFE AFRICA), basée à Calavi, au Bénin. Aide les visiteurs sur la fédération, ses filiales, leurs activités et les informations publiées sur le portail. Réponds en français avec courtoisie et précision.
+
+INFORMATIONS OFFICIELLES DU PORTAIL
+Fèfè Afriica est la maison commune de trois initiatives béninoises complémentaires : MAAFRIK CENTERS forme et accompagne les talents, SAAKI agit pour des emballages plus durables et GAGNANTS 229 valorise le patrimoine béninois par le jeu.
+
+SAAKI
+- Site : https://saaki.bj
+- Écologie et environnement ; fabrication au Bénin et distribution de sacs en papier pour proposer une alternative aux sacs plastiques et réduire le péril plastique.
+- Le portail annonce son lancement officiel le mardi 3 novembre 2026. Informations et réservation de pass : https://eventreet.com/event/saaki-green-launch/395
+
+GAGNANTS 229 (aussi écrit Gagnants229)
+- Site : https://gagnants229.com
+- Culture, divertissement et patrimoine béninois, transmis par des jeux, quiz, animations et rendez-vous culturels.
+
+MAAFRIK CENTERS
+- Page officielle : https://www.facebook.com/maafrik
+- Formation, compétences numériques, design, conception graphique, impression, marquage publicitaire, emballages et entrepreneuriat.
+- Accompagne les jeunes vers le développement de compétences et l'insertion professionnelle.
+
+CONTACT ET LOCALISATION
+- Le portail situe la fédération à Calavi, au Bénin. Coordonnées indicatives publiées : 06° 22' N, 02° 25' E. Le portail ne fournit pas d'adresse de rue.
+- Formulaire de contact : section « Contact » du portail (#contact).
+- WhatsApp de l'équipe : https://wa.me/2290141757539
+
+RÈGLES DE RÉPONSE
+- Réponds aux questions pertinentes, y compris si elles contiennent des fautes de frappe, des accents manquants ou une formulation familière. Déduis l'intention sans corriger l'utilisateur de façon condescendante.
+- Utilise les informations officielles ci-dessus pour répondre directement. Pour une information qui n'y figure pas (par exemple le nom du dirigeant, les dates de création des filiales, une adresse de rue ou les horaires), indique honnêtement qu'elle n'est pas publiée dans les informations dont tu disposes et propose le formulaire ou WhatsApp.
+- Pour une question sur des informations récentes ou absentes de ce contexte, recherche des informations fiables sur le Web lorsque cela peut aider. Distingue les faits publiés par FEFE AFRICA des informations trouvées ailleurs et ne présente pas une source externe comme une information officielle.
+- N'invente jamais de faits. Pour une commande, un devis ou un partenariat, oriente vers le formulaire ou WhatsApp.`
 
 const MAX_MESSAGE_LENGTH = 1200
 const MAX_HISTORY_MESSAGES = 20
@@ -80,14 +102,34 @@ async function handleChat(body) {
     const result = await ai.models.generateContent({
       model: 'gemini-flash-lite-latest',
       contents,
-      config: { systemInstruction: SYSTEM_INSTRUCTION },
+      config: {
+        systemInstruction: SYSTEM_INSTRUCTION,
+        tools: [{ googleSearch: {} }],
+      },
     })
 
     if (typeof result.text !== 'string' || result.text.trim().length === 0) {
       throw new Error('Gemini returned an empty response.')
     }
 
-    return Response.json({ reply: result.text.trim() })
+    const sources = (result.candidates?.[0]?.groundingMetadata?.groundingChunks ?? [])
+      .flatMap((chunk) => {
+        const uri = chunk.web?.uri
+        if (!uri) return []
+
+        try {
+          const parsedUri = new URL(uri)
+          if (parsedUri.protocol !== 'https:' && parsedUri.protocol !== 'http:') return []
+          return [{ title: chunk.web?.title || parsedUri.hostname, url: parsedUri.href }]
+        } catch {
+          return []
+        }
+      })
+      .filter((source, index, allSources) =>
+        allSources.findIndex((candidate) => candidate.url === source.url) === index,
+      )
+
+    return Response.json({ reply: result.text.trim(), sources })
   } catch (error) {
     console.error('Gemini chat request failed.', error)
     const status =
@@ -116,7 +158,7 @@ async function handleChat(body) {
 
     if (status === 429) {
       return Response.json(
-        { error: 'La limite de requêtes Gemini est atteinte. Réessayez dans quelques instants.' },
+        { error: 'La limite est atteinte. Réessayez plus tard.' },
         { status: 429 },
       )
     }

@@ -4,10 +4,16 @@ import { Bot, MessageCircle, Send, X } from '@lucide/vue'
 
 type MessageRole = 'user' | 'assistant'
 
+interface GroundingSource {
+  title: string
+  url: string
+}
+
 interface ChatMessage {
   id: number
   role: MessageRole
   content: string
+  sources?: GroundingSource[]
 }
 
 interface SavedConversation {
@@ -25,7 +31,27 @@ const welcomeMessage: ChatMessage = {
 
 const errorMessage =
   'Désolé, une erreur est survenue. Veuillez réinstaller ou contacter le support via WhatsApp.'
-const whatsappUrl = 'https://wa.me/2290196673658?text=Bonjour%20F%C3%A8f%C3%A8%20Afriica%2C%20je%20souhaite%20obtenir%20des%20informations.'
+const whatsappUrl = 'https://wa.me/2290141757539?text=Bonjour%20F%C3%A8f%C3%A8%20Afriica%2C%20je%20souhaite%20obtenir%20des%20informations.'
+
+function isGroundingSource(value: unknown): value is GroundingSource {
+  if (
+    typeof value !== 'object' ||
+    value === null ||
+    !('title' in value) ||
+    typeof value.title !== 'string' ||
+    !('url' in value) ||
+    typeof value.url !== 'string'
+  ) {
+    return false
+  }
+
+  try {
+    const url = new URL(value.url)
+    return url.protocol === 'https:' || url.protocol === 'http:'
+  } catch {
+    return false
+  }
+}
 
 function loadConversation(): SavedConversation {
   const now = Date.now()
@@ -51,7 +77,9 @@ function loadConversation(): SavedConversation {
             'role' in message &&
             (message.role === 'user' || message.role === 'assistant') &&
             'content' in message &&
-            typeof message.content === 'string',
+            typeof message.content === 'string' &&
+            (!('sources' in message) ||
+              (Array.isArray(message.sources) && message.sources.every(isGroundingSource))),
         ) &&
         parsed.messages.length > 0 &&
         now - parsed.lastActivityAt < conversationTimeout
@@ -185,13 +213,24 @@ async function sendMessage() {
       data === null ||
       !('reply' in data) ||
       typeof data.reply !== 'string' ||
-      !data.reply.trim()
+      !data.reply.trim() ||
+      ('sources' in data &&
+        (!Array.isArray(data.sources) || !data.sources.every(isGroundingSource)))
     ) {
       throw new Error('Chat API returned an invalid reply')
     }
 
     if (requestGeneration === conversationGeneration) {
-      messages.value.push({ id: nextMessageId++, role: 'assistant', content: data.reply.trim() })
+      const sources =
+        'sources' in data && Array.isArray(data.sources)
+          ? data.sources.filter(isGroundingSource)
+          : undefined
+      messages.value.push({
+        id: nextMessageId++,
+        role: 'assistant',
+        content: data.reply.trim(),
+        sources,
+      })
       lastActivityAt.value = Date.now()
     }
   } catch (error) {
@@ -252,16 +291,32 @@ async function sendMessage() {
         aria-relevant="additions text"
       >
         <div v-for="message in messages" :key="message.id" class="flex" :class="message.role === 'user' ? 'justify-end' : 'justify-start'">
-          <p
-            class="max-w-[86%] whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed"
-            :class="
-              message.role === 'user'
-                ? 'rounded-br-md bg-emerald-700 text-white'
-                : 'rounded-bl-md bg-slate-800 text-slate-200'
-            "
-          >
-            {{ message.content }}
-          </p>
+          <div class="max-w-[86%]">
+            <p
+              class="whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed"
+              :class="
+                message.role === 'user'
+                  ? 'rounded-br-md bg-emerald-700 text-white'
+                  : 'rounded-bl-md bg-slate-800 text-slate-200'
+              "
+            >
+              {{ message.content }}
+            </p>
+            <ul
+              v-if="message.role === 'assistant' && message.sources?.length"
+              class="mt-2 space-y-1 px-1 text-xs text-slate-400"
+              aria-label="Sources Web"
+            >
+              <li v-for="source in message.sources" :key="source.url">
+                <a
+                  class="break-all underline decoration-slate-600 underline-offset-2 hover:text-emerald-300"
+                  :href="source.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >{{ source.title }}</a>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div v-if="isLoading" class="flex justify-start" role="status" aria-label="Fèfè Bot rédige une réponse">
